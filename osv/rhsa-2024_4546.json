@@ -318,6 +318,14 @@
   ],
   "references": [
     {
+      "type": "ADVISORY",
+      "url": "https://access.redhat.com/errata/RHSA-2024:4546"
+    },
+    {
+      "type": "REPORT",
+      "url": "https://access.redhat.com/security/cve/CVE-2023-45288"
+    },
+    {
       "type": "REPORT",
       "url": "https://bugzilla.redhat.com/show_bug.cgi?id=2268273"
     },
