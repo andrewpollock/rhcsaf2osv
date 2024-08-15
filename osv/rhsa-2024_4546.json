@@ -17,7 +17,7 @@
   "affected": [
     {
       "package": {
-        "ecosystem": "Red Hat Enterprise Linux AppStream AUS:8.6",
+        "ecosystem": "redhat:rhel_aus:8.6::appstream",
         "name": "git-lfs",
         "purl": "pkg:rpm/redhat/git-lfs@2.13.3-3.el8_6.1?arch=src"
       },
@@ -37,7 +37,7 @@
     },
     {
       "package": {
-        "ecosystem": "Red Hat Enterprise Linux AppStream AUS:8.6",
+        "ecosystem": "redhat:rhel_aus:8.6::appstream",
         "name": "git-lfs",
         "purl": "pkg:rpm/redhat/git-lfs@2.13.3-3.el8_6.1?arch=x86_64"
       },
@@ -57,7 +57,7 @@
     },
     {
       "package": {
-        "ecosystem": "Red Hat Enterprise Linux AppStream AUS:8.6",
+        "ecosystem": "redhat:rhel_aus:8.6::appstream",
         "name": "git-lfs-debuginfo",
         "purl": "pkg:rpm/redhat/git-lfs-debuginfo@2.13.3-3.el8_6.1?arch=x86_64"
       },
@@ -77,7 +77,7 @@
     },
     {
       "package": {
-        "ecosystem": "Red Hat Enterprise Linux AppStream AUS:8.6",
+        "ecosystem": "redhat:rhel_aus:8.6::appstream",
         "name": "git-lfs-debugsource",
         "purl": "pkg:rpm/redhat/git-lfs-debugsource@2.13.3-3.el8_6.1?arch=x86_64"
       },
@@ -97,7 +97,7 @@
     },
     {
       "package": {
-        "ecosystem": "Red Hat Enterprise Linux AppStream E4S:8.6",
+        "ecosystem": "redhat:rhel_tus:8.6::appstream",
         "name": "git-lfs",
         "purl": "pkg:rpm/redhat/git-lfs@2.13.3-3.el8_6.1?arch=src"
       },
@@ -117,7 +117,7 @@
     },
     {
       "package": {
-        "ecosystem": "Red Hat Enterprise Linux AppStream E4S:8.6",
+        "ecosystem": "redhat:rhel_tus:8.6::appstream",
         "name": "git-lfs",
         "purl": "pkg:rpm/redhat/git-lfs@2.13.3-3.el8_6.1?arch=x86_64"
       },
@@ -137,7 +137,7 @@
     },
     {
       "package": {
-        "ecosystem": "Red Hat Enterprise Linux AppStream E4S:8.6",
+        "ecosystem": "redhat:rhel_tus:8.6::appstream",
         "name": "git-lfs",
         "purl": "pkg:rpm/redhat/git-lfs@2.13.3-3.el8_6.1?arch=ppc64le"
       },
@@ -157,7 +157,7 @@
     },
     {
       "package": {
-        "ecosystem": "Red Hat Enterprise Linux AppStream E4S:8.6",
+        "ecosystem": "redhat:rhel_tus:8.6::appstream",
         "name": "git-lfs-debuginfo",
         "purl": "pkg:rpm/redhat/git-lfs-debuginfo@2.13.3-3.el8_6.1?arch=x86_64"
       },
@@ -177,7 +177,7 @@
     },
     {
       "package": {
-        "ecosystem": "Red Hat Enterprise Linux AppStream E4S:8.6",
+        "ecosystem": "redhat:rhel_tus:8.6::appstream",
         "name": "git-lfs-debuginfo",
         "purl": "pkg:rpm/redhat/git-lfs-debuginfo@2.13.3-3.el8_6.1?arch=ppc64le"
       },
@@ -197,7 +197,7 @@
     },
     {
       "package": {
-        "ecosystem": "Red Hat Enterprise Linux AppStream E4S:8.6",
+        "ecosystem": "redhat:rhel_tus:8.6::appstream",
         "name": "git-lfs-debugsource",
         "purl": "pkg:rpm/redhat/git-lfs-debugsource@2.13.3-3.el8_6.1?arch=x86_64"
       },
@@ -217,7 +217,7 @@
     },
     {
       "package": {
-        "ecosystem": "Red Hat Enterprise Linux AppStream E4S:8.6",
+        "ecosystem": "redhat:rhel_e4s:8.6::appstream",
         "name": "git-lfs-debugsource",
         "purl": "pkg:rpm/redhat/git-lfs-debugsource@2.13.3-3.el8_6.1?arch=ppc64le"
       },
@@ -237,7 +237,7 @@
     },
     {
       "package": {
-        "ecosystem": "Red Hat Enterprise Linux AppStream TUS:8.6",
+        "ecosystem": "redhat:rhel_tus:8.6::appstream",
         "name": "git-lfs",
         "purl": "pkg:rpm/redhat/git-lfs@2.13.3-3.el8_6.1?arch=src"
       },
@@ -257,7 +257,7 @@
     },
     {
       "package": {
-        "ecosystem": "Red Hat Enterprise Linux AppStream TUS:8.6",
+        "ecosystem": "redhat:rhel_tus:8.6::appstream",
         "name": "git-lfs",
         "purl": "pkg:rpm/redhat/git-lfs@2.13.3-3.el8_6.1?arch=x86_64"
       },
@@ -277,7 +277,7 @@
     },
     {
       "package": {
-        "ecosystem": "Red Hat Enterprise Linux AppStream TUS:8.6",
+        "ecosystem": "redhat:rhel_tus:8.6::appstream",
         "name": "git-lfs-debuginfo",
         "purl": "pkg:rpm/redhat/git-lfs-debuginfo@2.13.3-3.el8_6.1?arch=x86_64"
       },
@@ -297,7 +297,7 @@
     },
     {
       "package": {
-        "ecosystem": "Red Hat Enterprise Linux AppStream TUS:8.6",
+        "ecosystem": "redhat:rhel_tus:8.6::appstream",
         "name": "git-lfs-debugsource",
         "purl": "pkg:rpm/redhat/git-lfs-debugsource@2.13.3-3.el8_6.1?arch=x86_64"
       },
