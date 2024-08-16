@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Any, Iterable
 
 
+
 class Reference(object):
     """
     class to handle CSAF References
