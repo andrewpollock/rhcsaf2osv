@@ -10,6 +10,8 @@ from rhel_osv import csaf
 class OSVEncoder(JSONEncoder):
     """ Encodes OSV objects into JSON format"""
     def default(self, o):
+        if isinstance(o, Event):
+            return o.encode_json()
         return o.__dict__
 
 
@@ -17,8 +19,8 @@ class Reference(object):
     """
     Class to hold references for an Advisory
     """
-    def __init__(self, type: str, url: str):
-        self.type = type
+    def __init__(self, ref_type: str, url: str):
+        self.type = ref_type
         self.url = url
 
 
@@ -27,9 +29,28 @@ class Event(object):
     Class to hold event information for a Range. Advisories for Red Hat RPM based products always
     assume all previous versions are affected.
     """
-    def __init__(self, fixed: str):
-        self.introduced = "0"
-        self.fixed = fixed
+    INTRODUCED = "introduced"
+    FIXED = "fixed"
+
+    def __init__(self, event_type: str, version: str = "0"):
+        expected = (self.INTRODUCED, self.FIXED)
+        if event_type not in expected:
+            raise ValueError(f"Expected one of {expected} for type. Got {event_type}")
+        self.event_type = event_type
+        self.version = version
+
+    def encode_json(self):
+        """
+        Custom JSON encoding for event type which changes attribute name depending on the type of
+        event eg. introduced or fixed
+        """
+        if self.event_type == Event.INTRODUCED:
+            return {Event.INTRODUCED: self.version}
+        elif self.event_type == Event.FIXED:
+            return {Event.FIXED: self.version}
+        else:
+            raise ValueError("Unexpected event_type for Event")
+
 
 
 class Range(object):
@@ -38,8 +59,8 @@ class Range(object):
     in https://github.com/rpm-software-management/rpm/blob/master/rpmio/rpmvercmp.c
     """
     def __init__(self, fixed: str):
-        self.type = "ECOSYSTEM",
-        self.events = [Event(fixed)]
+        self.type = "ECOSYSTEM"
+        self.events = [Event("introduced"), Event("fixed", fixed)]
 
 
 class Package(object):

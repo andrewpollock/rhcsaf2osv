@@ -2,9 +2,11 @@
 # License: GPLv3+
 
 import json
+import logging
 from pathlib import Path
 from typing import Any, Iterable
 
+logger = logging.Logger(__name__)
 
 
 class Reference(object):
@@ -27,6 +29,11 @@ class Remediation(object):
         (self.product, self.product_version) = csaf_product_id.split(":", maxsplit=1)
         self.cpe = cpes.get(self.product)
         self.purl = purls.get(self.product_version)
+        # There are many pkg:oci/ remediations in Red Hat data. However there are no strict
+        # rules enforced on versioning Red Hat containers, therefore we cant compare container
+        # versions to each other with 100% accuracy at this time.
+        if not self.purl.startswith("pkg:rpm/"):
+            raise ValueError(f"Non RPM remediations are not supported in OSV at this time")
 
         # NEVRA stands for Name Epoch Version Revision and Architecture
         # We split the name from the rest of the 'version' data (EVRA). We store name as component.
@@ -47,12 +54,14 @@ class Vulnerability(object):
             if "cvss_v3" in score:
                 self.cvss_v3_vector = score["cvss_v3"]["vectorString"]
                 self.cvss_v3_base_score = score["cvss_v3"]["baseScore"]
+        self.references = [Reference(r) for r in csaf_vuln["references"]]
         self.remediations = []
         for product_id in csaf_vuln["product_status"]["fixed"]:
             try:
                 self.remediations.append(Remediation(product_id, cpes, purls))
             except ValueError as e:
-                print(f"Warning: Could not parse product_id: {product_id}: {e}")
+                logger.warning(f"Could not parse product_id: {product_id}: {e}")
+
 
 def gen_dict_extract(key, var: Iterable):
     """
