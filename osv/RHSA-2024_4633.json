@@ -1,20 +1,20 @@
 {
   "schema_version": "1.6.3",
-  "id": "rhsa-2024_4633",
-  "modified": "2024-08-21T23:20:20Z",
-  "published": "2024-08-21T23:20:20Z",
+  "id": "RHSA-2024_4633",
+  "related": [
+    "CVE-2024-1062",
+    "CVE-2024-2199",
+    "CVE-2024-3657",
+    "CVE-2024-5953"
+  ],
+  "published": "2024-08-22T04:14:08Z",
+  "modified": "2024-08-22T04:14:08Z",
   "summary": "Red Hat Security Advisory: 389-ds-base security update",
   "severity": [
     {
       "type": "CVSS_V3",
       "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
     }
-  ],
-  "related": [
-    "CVE-2024-1062",
-    "CVE-2024-2199",
-    "CVE-2024-3657",
-    "CVE-2024-5953"
   ],
   "affected": [
     {

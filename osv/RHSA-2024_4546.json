@@ -1,18 +1,18 @@
 {
   "schema_version": "1.6.3",
-  "id": "rhsa-2024_4546",
-  "modified": "2024-08-21T23:20:11Z",
-  "published": "2024-08-21T23:20:11Z",
+  "id": "RHSA-2024_4546",
+  "related": [
+    "CVE-2023-45288",
+    "GO-2024-2687"
+  ],
+  "published": "2024-08-22T04:12:44Z",
+  "modified": "2024-08-22T04:12:44Z",
   "summary": "Red Hat Security Advisory: git-lfs security update",
   "severity": [
     {
       "type": "CVSS_V3",
       "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
     }
-  ],
-  "related": [
-    "CVE-2023-45288",
-    "GO-2024-2687"
   ],
   "affected": [
     {

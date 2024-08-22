@@ -119,7 +119,11 @@ class OSV:
         # Update this if verified against a later version
         self.schema_version = self.SCHEMA_VERSION
 
-        self.id = csaf_data.id
+        self.id = csaf_data.id.upper()
+
+        # This attribute is declared after id to make the resulting JSON human-readable. It can only
+        # be populated after reading the csaf vulnerabilities and references sections.
+        self.related: list[str] = []
 
         current_time = datetime.datetime.now(datetime.timezone.utc)
         self.published = current_time.strftime('%Y-%m-%dT%H:%M:%SZ')
@@ -135,7 +139,6 @@ class OSV:
             "score": highest_scoring_vuln.cvss_v3_vector
         }]
 
-        self.related: list[str] = []
         self.affected: list[Affected] = []
         for vulnerability in csaf_data.vulnerabilities:
             self.related.append(vulnerability.cve_id)
