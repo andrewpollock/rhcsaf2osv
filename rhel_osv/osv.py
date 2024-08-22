@@ -9,6 +9,7 @@ from rhel_osv.csaf import Remediation, CSAF
 
 class OSVEncoder(JSONEncoder):
     """ Encodes OSV objects into JSON format"""
+
     def default(self, o):
         if isinstance(o, Event):
             return o.encode_json()
@@ -30,7 +31,8 @@ class Event:
     def __init__(self, event_type: str, version: str = "0"):
         expected = (self.INTRODUCED, self.FIXED)
         if event_type not in expected:
-            raise ValueError(f"Expected one of {expected} for type. Got {event_type}")
+            raise ValueError(
+                f"Expected one of {expected} for type. Got {event_type}")
         self.event_type = event_type
         self.version = version
 
@@ -51,6 +53,7 @@ class Range:
     Class to hold range information for a Package. Ecosystem here refers to RPM versions as defined
     in https://github.com/rpm-software-management/rpm/blob/master/rpmio/rpmvercmp.c
     """
+
     # pylint: disable=too-few-public-methods
     # This class encapsulates version range types as 'ECOSYSTEM' type
     # Only initialization is required because data retrieval is via JSON encoding
@@ -85,16 +88,14 @@ class Affected:
     """
     Class to hold affected data for a Vulnerability
     """
+
     # pylint: disable=too-few-public-methods
     # This class encapsulates Red Hat Affects
     # Only initialization is required because data retrieval is via JSON encoding
 
     def __init__(self, remediation: Remediation):
-        self.package = Package(
-            remediation.component,
-            remediation.cpe,
-            remediation.purl
-        )
+        self.package = Package(remediation.component, remediation.cpe,
+                               remediation.purl)
         self.ranges = [Range(remediation.fixed_version)]
 
 
@@ -127,10 +128,12 @@ class OSV:
         self.summary = csaf_data.title
 
         # Set severity to the CVSS of the highest CVSSv3 base score
-        highest_scoring_vuln = sorted(
-            csaf_data.vulnerabilities, key=lambda x: x.cvss_v3_base_score
-        )[-1]
-        self.severity = [{"type": "CVSS_V3", "score": highest_scoring_vuln.cvss_v3_vector}]
+        highest_scoring_vuln = sorted(csaf_data.vulnerabilities,
+                                      key=lambda x: x.cvss_v3_base_score)[-1]
+        self.severity = [{
+            "type": "CVSS_V3",
+            "score": highest_scoring_vuln.cvss_v3_vector
+        }]
 
         self.related: list[str] = []
         self.affected: list[Affected] = []
@@ -152,14 +155,16 @@ class OSV:
             if reference["category"] == "self":
                 references[reference["url"]] = "ADVISORY"
             else:
-                references[reference["url"]] = self._get_reference_type(reference)
+                references[reference["url"]] = self._get_reference_type(
+                    reference)
         for vulnerability in csaf.vulnerabilities:
             for reference in vulnerability.references:
                 # This captures the CVE specific information
                 if reference["category"] == "self":
                     references[reference["url"]] = "REPORT"
                 else:
-                    references[reference["url"]] = self._get_reference_type(reference)
+                    references[reference["url"]] = self._get_reference_type(
+                        reference)
         return [{"type": t, "url": u} for u, t in references.items()]
 
     def _get_reference_type(self, reference: dict[str, str]) -> str:
@@ -170,7 +175,8 @@ class OSV:
         if reference["url"].startswith(self.ADVISORY_URL_PREFIXES):
             self._add_go_related(reference["url"])
             return "ADVISORY"
-        if reference["url"].startswith("https://bugzilla.redhat.com/show_bug.cgi"):
+        if reference["url"].startswith(
+                "https://bugzilla.redhat.com/show_bug.cgi"):
             return "REPORT"
         return "ARTICLE"
 
@@ -179,4 +185,5 @@ class OSV:
         Check for GO Vulnerability Advisory references and add them to the OSV 'related' field
         """
         if reference_url.startswith(self.PKG_GO_DEV_VULN):
-            self.related.append(reference_url.removeprefix(self.PKG_GO_DEV_VULN))
+            self.related.append(
+                reference_url.removeprefix(self.PKG_GO_DEV_VULN))
