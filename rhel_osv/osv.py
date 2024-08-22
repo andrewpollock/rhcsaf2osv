@@ -1,10 +1,10 @@
 # Copyright (c) 2024 Jason Shepherd
 # License: GPLv3+
-
+"""Red Hat CSAF parser to OSV converter."""
 import datetime
 import re
 from json import JSONEncoder
-from rhel_osv import csaf
+from rhel_osv.csaf import Remediation, CSAF
 
 
 class OSVEncoder(JSONEncoder):
@@ -15,20 +15,15 @@ class OSVEncoder(JSONEncoder):
         return o.__dict__
 
 
-class Reference(object):
-    """
-    Class to hold references for an Advisory
-    """
-    def __init__(self, ref_type: str, url: str):
-        self.type = ref_type
-        self.url = url
-
-
-class Event(object):
+class Event:
     """
     Class to hold event information for a Range. Advisories for Red Hat RPM based products always
     assume all previous versions are affected.
     """
+    # pylint: disable=too-few-public-methods
+    # This class encapsulates and validates version range events
+    # Only a single public method is required for custom JSON encoding
+
     INTRODUCED = "introduced"
     FIXED = "fixed"
 
@@ -46,30 +41,36 @@ class Event(object):
         """
         if self.event_type == Event.INTRODUCED:
             return {Event.INTRODUCED: self.version}
-        elif self.event_type == Event.FIXED:
+        if self.event_type == Event.FIXED:
             return {Event.FIXED: self.version}
-        else:
-            raise ValueError("Unexpected event_type for Event")
+        raise ValueError("Unexpected event_type for Event")
 
 
-
-class Range(object):
+class Range:
     """
     Class to hold range information for a Package. Ecosystem here refers to RPM versions as defined
     in https://github.com/rpm-software-management/rpm/blob/master/rpmio/rpmvercmp.c
     """
+    # pylint: disable=too-few-public-methods
+    # This class encapsulates version range types as 'ECOSYSTEM' type
+    # Only initialization is required because data retrieval is via JSON encoding
+
     def __init__(self, fixed: str):
         self.type = "ECOSYSTEM"
         self.events = [Event("introduced"), Event("fixed", fixed)]
 
 
-class Package(object):
+class Package:
     """
     Class to hold package data for an Affect. Expects an ecosystem string that starts with
     CPE_PATTERN.
     Replaces the CPE prefix 'redhat' part with 'Red Hat' to match more closely with other ecosystem
     identifiers in the OSV database
     """
+    # pylint: disable=too-few-public-methods
+    # This class encapsulates Red Hat RPM Packages by Ecosystem
+    # Only initialization is required because data retrieval is via JSON encoding
+
     CPE_PATTERN = re.compile(r"cpe:/[oa]:(redhat)")
 
     def __init__(self, name: str, ecosystem: str, purl: str):
@@ -80,11 +81,15 @@ class Package(object):
         self.purl = purl
 
 
-class Affected(object):
+class Affected:
     """
     Class to hold affected data for a Vulnerability
     """
-    def __init__(self, remediation: csaf.Remediation):
+    # pylint: disable=too-few-public-methods
+    # This class encapsulates Red Hat Affects
+    # Only initialization is required because data retrieval is via JSON encoding
+
+    def __init__(self, remediation: Remediation):
         self.package = Package(
             remediation.component,
             remediation.cpe,
@@ -93,7 +98,7 @@ class Affected(object):
         self.ranges = [Range(remediation.fixed_version)]
 
 
-class OSV(object):
+class OSV:
     """
     Class to convert CSAF data to OSV
     """
@@ -106,32 +111,37 @@ class OSV(object):
         "https://www.cve.org/CVERecord",
         "https://nvd.nist.gov/vuln/detail/",
         "https://www.kb.cert.org/vuls/id/",
+        "https://github.com/advisories/",
     )
 
-    def __init__(self, csaf: csaf.CSAF):
+    def __init__(self, csaf_data: CSAF):
+        # Update this if verified against a later version
         self.schema_version = self.SCHEMA_VERSION
-        self.id = csaf.id
+
+        self.id = csaf_data.id
 
         current_time = datetime.datetime.now(datetime.timezone.utc)
-        self.modified = current_time.strftime('%Y-%m-%dT%H:%M:%SZ')
-        self.published = self.modified
+        self.published = current_time.strftime('%Y-%m-%dT%H:%M:%SZ')
+        self.modified = self.published
 
-        self.summary = csaf.title
+        self.summary = csaf_data.title
 
         # Set severity to the CVSS of the highest CVSSv3 base score
-        highest_scoring_vuln = sorted(csaf.vulnerabilities, key=lambda x: x.cvss_v3_base_score)[-1]
+        highest_scoring_vuln = sorted(
+            csaf_data.vulnerabilities, key=lambda x: x.cvss_v3_base_score
+        )[-1]
         self.severity = [{"type": "CVSS_V3", "score": highest_scoring_vuln.cvss_v3_vector}]
 
         self.related: list[str] = []
         self.affected: list[Affected] = []
-        for vulnerability in csaf.vulnerabilities:
+        for vulnerability in csaf_data.vulnerabilities:
             self.related.append(vulnerability.cve_id)
             for remediation in vulnerability.remediations:
                 self.affected.append(Affected(remediation))
 
-        self.references = self._convert_references(csaf)
+        self.references = self._convert_references(csaf_data)
 
-    def _convert_references(self, csaf: csaf.CSAF) -> list[Reference]:
+    def _convert_references(self, csaf) -> list[dict[str, str]]:
         """
         CSAF has references for an advisory and each vulnerability has references as well.
         Collect this into a single references list for OSV and deduplicate them.
@@ -139,31 +149,30 @@ class OSV(object):
         references: dict[str, str] = {}
         for reference in csaf.references:
             # This will capture both the Advisory URL and the CSAF document for the advisory
-            if reference.category == "self":
-                references[reference.url] = "ADVISORY"
+            if reference["category"] == "self":
+                references[reference["url"]] = "ADVISORY"
             else:
-                references[reference.url] = self._get_reference_type(reference)
+                references[reference["url"]] = self._get_reference_type(reference)
         for vulnerability in csaf.vulnerabilities:
             for reference in vulnerability.references:
                 # This captures the CVE specific information
-                if reference.category == "self":
-                    references[reference.url] = "REPORT"
+                if reference["category"] == "self":
+                    references[reference["url"]] = "REPORT"
                 else:
-                    references[reference.url] = self._get_reference_type(reference)
-        return [Reference(t, u) for u, t in references.items()]
+                    references[reference["url"]] = self._get_reference_type(reference)
+        return [{"type": t, "url": u} for u, t in references.items()]
 
-    def _get_reference_type(self, reference: csaf.Reference) -> str:
+    def _get_reference_type(self, reference: dict[str, str]) -> str:
         """
         Convert references from CSAF into typed referenced in OSV
         Also make sure to add a related entry for any GO advisory references found
         """
-        if reference.url.startswith(self.ADVISORY_URL_PREFIXES):
-            self._add_go_related(reference.url)
+        if reference["url"].startswith(self.ADVISORY_URL_PREFIXES):
+            self._add_go_related(reference["url"])
             return "ADVISORY"
-        elif reference.url.startswith("https://bugzilla.redhat.com/show_bug.cgi"):
+        if reference["url"].startswith("https://bugzilla.redhat.com/show_bug.cgi"):
             return "REPORT"
-        else:
-            return "ARTICLE"
+        return "ARTICLE"
 
     def _add_go_related(self, reference_url: str):
         """
@@ -171,4 +180,3 @@ class OSV(object):
         """
         if reference_url.startswith(self.PKG_GO_DEV_VULN):
             self.related.append(reference_url.removeprefix(self.PKG_GO_DEV_VULN))
-
