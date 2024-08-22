@@ -5,10 +5,16 @@
 
 import argparse
 import json
+import os
+import sys
+
+from jsonschema import validate
+from jsonschema.exceptions import ValidationError
 
 from rhel_osv.csaf import CSAF
 from rhel_osv.osv import OSV, OSVEncoder
 
+SCHEMA_PATH = f"schema-v{OSV.SCHEMA_VERSION}.json"
 
 def main():
     parser = argparse.ArgumentParser(description='CSAF to OSV Converter')
@@ -27,11 +33,14 @@ def main():
 
     osv = OSV(csaf)
 
-    output_filename = f"{osv.id}.json"
-    if args.out_dir:
-        output_filename = f"{args.out_dir}/{output_filename}"
-    with open(output_filename, 'w', encoding='utf-8') as out_f:
-        json.dump(osv, out_f, cls=OSVEncoder, indent=2)
+    if not osv.affected:
+        print("Didn't find any affects in OSV data, skipping.")
+        sys.exit(0)
+
+    output_filename = _write_and_validate_osv(args.out_dir, osv)
+
+    if not output_filename:
+        sys.exit(1)
 
     print(f"\nConverted to OSV: {output_filename}")
     print("Related:")
@@ -43,6 +52,31 @@ def main():
     print("References:")
     for ref in osv.references:
         print(f"    {ref.url} - {ref.type}")
+
+
+def _write_and_validate_osv(out_dir: str, osv: OSV):
+    output_filename = f"{osv.id}.json"
+    if out_dir:
+        output_filename = f"{out_dir}/{output_filename}"
+
+    with open(SCHEMA_PATH, 'r') as schema_file:
+        osv_schema = json.load(schema_file)
+
+    with open(output_filename, 'r+', encoding='utf-8') as out_f:
+        json.dump(osv, out_f, cls=OSVEncoder, indent=2)
+        out_f.flush()
+        out_f.seek(0)
+        json_data = json.load(out_f)
+
+    try:
+        validate(json_data, schema=osv_schema)
+    except ValidationError as e:
+        print(f"Error: Got Validation Error for {output_filename}; {e}")
+        os.remove(output_filename)
+        return ""
+
+    return output_filename
+
 
 if __name__ == '__main__':
     main()
