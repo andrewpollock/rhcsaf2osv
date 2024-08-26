@@ -1,0 +1,252 @@
+{
+  "document": {
+    "aggregate_severity": {
+      "namespace": "https://access.redhat.com/security/updates/classification/",
+      "text": "Important"
+    },
+    "category": "csaf_vex",
+    "csaf_version": "2.0",
+    "distribution": {
+      "text": "Copyright © Red Hat, Inc. All rights reserved.",
+      "tlp": {
+        "label": "WHITE",
+        "url": "https://www.first.org/tlp/"
+      }
+    },
+    "lang": "en",
+    "notes": [
+      {
+        "category": "summary",
+        "text": "Red Hat Integration Camel K 1.10.7 release and security update is now available.\n\nRed Hat Product Security has rated this update as having a security impact of\nImportant. A Common Vulnerability Scoring System (CVSS) base score, which gives a detailed severity rating, is available for each vulnerability from the CVE link(s) in the References section.",
+        "title": "Topic"
+      },
+      {
+        "category": "general",
+        "text": "Camel K 1.10.7 is now available.\n\nThe purpose of this text-only errata is to inform you about the security issues fixed.\n\nSecurity Fix(es):\n\n* pgjdbc: PostgreSQL JDBC Driver allows attacker to inject SQL if using PreferQueryMode=SIMPLE (CVE-2024-1597)\n\nFor more details about the security issue(s), including the impact, a CVSS\nscore, acknowledgments, and other related information, refer to the CVE important page(s) listed in the References section.",
+        "title": "Details"
+      },
+      {
+        "category": "legal_disclaimer",
+        "text": "This content is licensed under the Creative Commons Attribution 4.0 International License (https://creativecommons.org/licenses/by/4.0/). If you distribute this content, or a modified version of it, you must provide attribution to Red Hat Inc. and provide a link to the original.",
+        "title": "Terms of Use"
+      }
+    ],
+    "publisher": {
+      "category": "vendor",
+      "contact_details": "https://access.redhat.com/security/team/contact/",
+      "issuing_authority": "Red Hat Product Security is responsible for vulnerability handling across all Red Hat offerings.",
+      "name": "Red Hat Product Security",
+      "namespace": "https://www.redhat.com"
+    },
+    "references": [
+      {
+        "category": "self",
+        "summary": "https://access.redhat.com/errata/RHSA-2024:5056",
+        "url": "https://access.redhat.com/errata/RHSA-2024:5056"
+      },
+      {
+        "category": "external",
+        "summary": "https://access.redhat.com/security/updates/classification/#important",
+        "url": "https://access.redhat.com/security/updates/classification/#important"
+      },
+      {
+        "category": "external",
+        "summary": "2266523",
+        "url": "https://bugzilla.redhat.com/show_bug.cgi?id=2266523"
+      },
+      {
+        "category": "self",
+        "summary": "Canonical URL",
+        "url": "https://access.redhat.com/security/data/csaf/v2/advisories/2024/rhsa-2024_5056.json"
+      }
+    ],
+    "title": "Red Hat Security Advisory: Red Hat Integration Camel K 1.10.7 release and security update.",
+    "tracking": {
+      "current_release_date": "2024-08-15T12:28:44+00:00",
+      "generator": {
+        "date": "2024-08-15T12:28:44+00:00",
+        "engine": {
+          "name": "Red Hat SDEngine",
+          "version": "3.32.0"
+        }
+      },
+      "id": "RHSA-2024:5056",
+      "initial_release_date": "2024-08-06T16:51:24+00:00",
+      "revision_history": [
+        {
+          "date": "2024-08-06T16:51:24+00:00",
+          "number": "1",
+          "summary": "Initial version"
+        },
+        {
+          "date": "2024-08-06T16:51:24+00:00",
+          "number": "2",
+          "summary": "Last updated version"
+        },
+        {
+          "date": "2024-08-15T12:28:44+00:00",
+          "number": "3",
+          "summary": "Last generated version"
+        }
+      ],
+      "status": "final",
+      "version": "3"
+    }
+  },
+  "product_tree": {
+    "branches": [
+      {
+        "branches": [
+          {
+            "branches": [
+              {
+                "category": "product_name",
+                "name": "RHINT Camel-K 1.10.7",
+                "product": {
+                  "name": "RHINT Camel-K 1.10.7",
+                  "product_id": "RHINT Camel-K 1.10.7",
+                  "product_identification_helper": {
+                    "cpe": "cpe:/a:redhat:camel_k:1.10.7"
+                  }
+                }
+              }
+            ],
+            "category": "product_family",
+            "name": "Red Hat Integration"
+          }
+        ],
+        "category": "vendor",
+        "name": "Red Hat"
+      }
+    ]
+  },
+  "vulnerabilities": [
+    {
+      "cve": "CVE-2024-1597",
+      "cwe": {
+        "id": "CWE-89",
+        "name": "Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')"
+      },
+      "discovery_date": "2024-02-28T00:00:00+00:00",
+      "ids": [
+        {
+          "system_name": "Red Hat Bugzilla ID",
+          "text": "2266523"
+        }
+      ],
+      "notes": [
+        {
+          "category": "description",
+          "text": "A flaw was found in the PostgreSQL JDBC Driver. A SQL injection is possible when using the non-default connection property preferQueryMode=simple in combination with application code that has a vulnerable SQL that negates a parameter value.",
+          "title": "Vulnerability description"
+        },
+        {
+          "category": "summary",
+          "text": "pgjdbc: PostgreSQL JDBC Driver allows attacker to inject SQL if using PreferQueryMode=SIMPLE",
+          "title": "Vulnerability summary"
+        },
+        {
+          "category": "other",
+          "text": "The PostgreSQL JDBC Driver is not affected in the default query mode. Users that do not override the query mode are not impacted.\n\nThe described SQL injection vulnerability, while significant, is categorized as important rather than critical due to several factors. Firstly, the exploitation relies on specific conditions, including the use of a non-default query mode (preferQueryMode=simple) and the precise arrangement of user-controlled parameters within the SQL query. This limits the potential attack surface and reduces the likelihood of widespread exploitation across systems. Additionally, the vulnerability does not pose an immediate and severe risk of system compromise or data breach; rather, it enables attackers to manipulate SQL queries and potentially execute arbitrary commands within the context of the application's database. Furthermore, the vulnerability can be effectively mitigated by applying the provided patch or by avoiding the use of the vulnerable query mode, thus reducing the risk of exploitation.\n\nRed Hat Satellite ships a PostgreSQL JDBC Driver which embeds into Candlepin. However, Candlepin doesn't directly utilize the PostgreSQL JDBC Driver and doesn't set PreferQueryMode. Therefore, although the affected component is shipped, the product impact is considered Low. This issue may be addressed in a future Satellite release.",
+          "title": "Statement"
+        },
+        {
+          "category": "general",
+          "text": "The CVSS score(s) listed for this vulnerability do not reflect the associated product's status, and are included for informational purposes to better understand the severity of this vulnerability.",
+          "title": "CVSS score applicability"
+        }
+      ],
+      "product_status": {
+        "fixed": [
+          "RHINT Camel-K 1.10.7"
+        ]
+      },
+      "references": [
+        {
+          "category": "self",
+          "summary": "Canonical URL",
+          "url": "https://access.redhat.com/security/cve/CVE-2024-1597"
+        },
+        {
+          "category": "external",
+          "summary": "RHBZ#2266523",
+          "url": "https://bugzilla.redhat.com/show_bug.cgi?id=2266523"
+        },
+        {
+          "category": "external",
+          "summary": "https://www.cve.org/CVERecord?id=CVE-2024-1597",
+          "url": "https://www.cve.org/CVERecord?id=CVE-2024-1597"
+        },
+        {
+          "category": "external",
+          "summary": "https://nvd.nist.gov/vuln/detail/CVE-2024-1597",
+          "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-1597"
+        },
+        {
+          "category": "external",
+          "summary": "https://github.com/pgjdbc/pgjdbc/security/advisories/GHSA-24rp-q3w6-vc56",
+          "url": "https://github.com/pgjdbc/pgjdbc/security/advisories/GHSA-24rp-q3w6-vc56"
+        },
+        {
+          "category": "external",
+          "summary": "https://www.enterprisedb.com/docs/jdbc_connector/latest/01_jdbc_rel_notes/",
+          "url": "https://www.enterprisedb.com/docs/jdbc_connector/latest/01_jdbc_rel_notes/"
+        },
+        {
+          "category": "external",
+          "summary": "https://www.enterprisedb.com/docs/security/assessments/cve-2024-1597/",
+          "url": "https://www.enterprisedb.com/docs/security/assessments/cve-2024-1597/"
+        }
+      ],
+      "release_date": "2024-02-19T00:00:00+00:00",
+      "remediations": [
+        {
+          "category": "vendor_fix",
+          "details": "Before applying this update, make sure all previously released errata\nrelevant to your system have been applied.\n\nFor details on how to apply this update, refer to:\n\nhttps://access.redhat.com/articles/11258",
+          "product_ids": [
+            "RHINT Camel-K 1.10.7"
+          ],
+          "restart_required": {
+            "category": "none"
+          },
+          "url": "https://access.redhat.com/errata/RHSA-2024:5056"
+        },
+        {
+          "category": "workaround",
+          "details": "Do not use the connection propertypreferQueryMode=simple. If you do not explicitly specify a query mode, then you are using the default of extended and are not impacted by this issue.",
+          "product_ids": [
+            "RHINT Camel-K 1.10.7"
+          ]
+        }
+      ],
+      "scores": [
+        {
+          "cvss_v3": {
+            "attackComplexity": "LOW",
+            "attackVector": "NETWORK",
+            "availabilityImpact": "HIGH",
+            "baseScore": 9.8,
+            "baseSeverity": "CRITICAL",
+            "confidentialityImpact": "HIGH",
+            "integrityImpact": "HIGH",
+            "privilegesRequired": "NONE",
+            "scope": "UNCHANGED",
+            "userInteraction": "NONE",
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+            "version": "3.1"
+          },
+          "products": [
+            "RHINT Camel-K 1.10.7"
+          ]
+        }
+      ],
+      "threats": [
+        {
+          "category": "impact",
+          "details": "Important"
+        }
+      ],
+      "title": "pgjdbc: PostgreSQL JDBC Driver allows attacker to inject SQL if using PreferQueryMode=SIMPLE"
+    }
+  ]
+}
