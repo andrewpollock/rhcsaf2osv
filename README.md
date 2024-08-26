@@ -14,7 +14,7 @@ Needs to be run in a folder where the Red Hat CSAF documents to convert already 
 $ ./csaf_converter.py csaf/rhsa-2024_4546.json
 ~~~
 
-OSV documents will be output in the `osv` directory by default. Overwrite the default with the `--output_directory` option.
+OSV documents will be output in the `osv` directory by default. Override the default with the `--output_directory` option.
 
 ## Tests
 
