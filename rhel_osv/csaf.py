@@ -25,25 +25,38 @@ class Remediation:
                 f"Did not find ':' in product_id: {csaf_product_id}")
         (self.product,
          self.product_version) = csaf_product_id.split(":", maxsplit=1)
-        self.cpe = cpes.get(self.product)
-        self.purl = purls.get(self.product_version)
+
+        # NEVRA stands for Name Epoch Version Release and Architecture
+        # We split the name from the rest of the 'version' data (EVRA). We store name as component.
+        split_component_version = self.product_version.rsplit("-", maxsplit=2)
+        if len(split_component_version) < 3:
+            raise ValueError(
+                f"Could not convert component into NEVRA: {self.product_version}"
+            )
+        # RHEL Modules have 4 colons in the name part of the NEVRA. If we detect a modular RPM
+        # product ID, discard the module part of the name and look for that in the purl dict.
+        # Ideally we would keep the module information and use it when scanning a RHEL system,
+        # however this is not done today by Clair:  https://github.com/quay/claircore/pull/901/files
+        if split_component_version[0].count(":") == 4:
+            self.component = split_component_version[0].rsplit(":")[-1]
+        else:
+            self.component = split_component_version[0]
+        self.fixed_version = "-".join(
+            (split_component_version[1], split_component_version[2]))
+
+        try:
+            nevra = f"{self.component}-{self.fixed_version}"
+            self.purl = purls[nevra]
+            self.cpe = cpes[self.product]
+        except KeyError:
+            raise ValueError(f"Did not find {csaf_product_id} in product branches")
+
         # There are many pkg:oci/ remediations in Red Hat data. However there are no strict
         # rules enforced on versioning Red Hat containers, therefore we cant compare container
         # versions to each other with 100% accuracy at this time.
         if not self.purl.startswith("pkg:rpm/"):
             raise ValueError(
                 "Non RPM remediations are not supported in OSV at this time")
-
-        # NEVRA stands for Name Epoch Version Release and Architecture
-        # We split the name from the rest of the 'version' data (EVRA). We store name as component.
-        split_component_version = self.product_version.rsplit("-", maxsplit=2)
-        if len(split_component_version) != 3:
-            raise ValueError(
-                f"Could not convert component into NEVRA: {self.product_version}"
-            )
-        self.component = split_component_version[0]
-        self.fixed_version = "-".join(
-            (split_component_version[1], split_component_version[2]))
 
 
 class Vulnerability:

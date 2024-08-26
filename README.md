@@ -15,3 +15,9 @@ $ ./csaf_converter.py csaf/rhsa-2024_4546.json
 ~~~
 
 OSV documents will be output in the `osv` directory by default. Overwrite the default with the `--output_directory` option.
+
+## Tests
+
+~~~
+$ python3 -m unittest rhel_osv/*_test.py
+~~~
